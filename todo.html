@@ -1,0 +1,73 @@
+<!-- 在 Vue 框架下，如果你想要页面显示一个数据，就要先在代码的 data 里声明数据；
+    在输入框的代码里，使用 v-model 来标记输入框和数据的同步；
+    在 HTML 模板里，使用两个花括号标记，来显示数据，例如{{title}}。对应代码大概是这个样子： -->
+
+<div id="app">
+  <h2>{{title}}</h2>
+  <input type="text" v-model="title" @keydown.enter="addTodo" />
+  <button v-if="active<all" @click="clear">清理完成项目</button>
+  <ul v-if="todos.length">
+    <li v-for="todo in todos">
+      <input type="checkbox" v-model="todo.done" />
+
+      <span :class="{done: todo.done}">{{todo.title}}</span>
+    </li>
+  </ul>
+  <div v-else>暂无数据</div>
+  <div>
+    全选<input type="checkbox" v-model="allDone" />
+    <span> | 未完成比例：{{active}} / {{all}}</span>
+  </div>
+</div>
+
+<script src="https://unpkg.com/vue@next"></script>
+<script>
+  const App = {
+    data() {
+      return {
+        title: "", // 定义一个数据
+        todos: [
+          { title: "吃饭", done: false },
+          { title: "睡觉", done: true },
+        ],
+      };
+    },
+
+    methods: {
+      addTodo() {
+        this.todos.push({ title: this.title, done: false });
+        this.title = "";
+      },
+      clear() {
+        this.todos = this.todos.filter((v) => !v.done); //只留下来todos列表中done属性不是true的对象
+      },
+    },
+
+    computed: {
+      active() {
+        return this.todos.filter((i) => !i.done).length;
+      },
+      all() {
+        return this.todos.length;
+      },
+      allDone: {
+        get: function () {
+          return this.active === 0; // 因为是在getter中 https://zh.javascript.info/property-descriptors 以及下一章节getter setter
+        },
+        set: function (value) {
+          // value是true或者false
+          this.todos.forEach((todo) => (todo.done = value));
+        },
+      },
+    },
+  };
+  // 启动应用
+  Vue.createApp(App).mount("#app");
+</script>
+
+<style>
+  .done {
+    color: gray;
+    text-decoration: line-through;
+  }
+</style>
