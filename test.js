@@ -1,25 +1,16 @@
-todos = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-function active() {
-  return todos.filter((i) => i === 300).length;
-}
+let getDouble = (n) => n * 2;
+let _value = 1;
+double = getDouble(_value);
 
-console.log(active === 0);
-
-const App = {
-  computed: {
-    active() {
-      return 0;
-    },
-    all() {
-      return 100;
-    },
-    allDone: {
-      get: function () {
-        return active() === 0;
-      },
-    },
+let count = {
+  get value() {
+    return _value;
+  },
+  set value(val) {
+    _value = val;
+    double = getDouble(_value);
   },
 };
-
-// console.log(typeof App.computed.active);
-console.log(App.computed.allDone.get());
+console.log(count.value, double);
+count.value = 2;
+console.log(count.value, double);
